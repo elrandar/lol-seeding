@@ -1,8 +1,9 @@
 import csv
 import sys
 from riotwatcher import LolWatcher, ApiError
+from operator import itemgetter
 
-lol_watcher = LolWatcher('') //API KEY
+lol_watcher = LolWatcher('') # put your riot API key here
 region = 'euw1'
 
 elo_tier = {
@@ -24,6 +25,7 @@ elo_rank = {
     "IV": 0
 }
 
+list_seeding = []
 
 def open_file(csvFilename):
 
@@ -31,6 +33,30 @@ def open_file(csvFilename):
         reader = csv.DictReader(csvfile)
         for row in reader:
             compute_team(row)
+
+    rankedConf = 0
+    flexConf = 0
+    for team in list_seeding:
+        rankedConf += team['accRanked']
+        flexConf += team['accFlex']
+    rankedConf /= len(list_seeding) * 5
+    flexConf /= len(list_seeding) * 5
+
+    print("Seeding when using ranked : Accuracy =", rankedConf)
+    ranked_seeding = sorted(list_seeding, key=itemgetter('rankedElo'), reverse=True)
+    i = 1
+    for team in ranked_seeding:
+        print("SEED", i, team['team'])
+        i += 1
+
+    print("Seeding when using flex : Accuracy =", flexConf)
+    flex_seeding = sorted(list_seeding, key=itemgetter('flexElo'), reverse=True)
+    i = 1
+    for team in flex_seeding:
+        print("SEED", i, team['team'])
+        i += 1
+
+    #TODO Seeding when using most accurate elo for each team, export to csv
 
 def compute_team(team):
     print('Team:', team["teamname"])
@@ -53,6 +79,13 @@ def compute_team(team):
         print("\t\t", elo)
     print("Ranked ELO :", rankedEloSum / rankedEloN)
     print("Flex ELO :", flexEloSum / flexEloN, '\n')
+    list_seeding.append({
+        "team": team["teamname"],
+        "flexElo": flexEloSum / flexEloN,
+        "rankedElo": rankedEloSum / rankedEloN,
+        "accRanked": rankedEloN,
+        "accFlex": flexEloN,
+    })
         # print('\t\t', get_elo(team[strings[i]]))
 
 
