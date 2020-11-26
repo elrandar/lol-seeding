@@ -9,3 +9,8 @@ Column names of the input csv:
 - Summoner 3 : `summoner3`
 - Summoner 4 : `summoner4`
 - Summoner 5 : `summoner5`
+
+Usage : 
+```
+python3 main.py <csv_file>
+```
