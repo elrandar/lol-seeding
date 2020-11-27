@@ -29,7 +29,7 @@ list_seeding = []
 
 def open_file(csvFilename):
 
-    with open(csvFilename, newline='') as csvfile:
+    with open(csvFilename, newline='', encoding="utf-8") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             compute_team(row)
@@ -60,7 +60,7 @@ def open_file(csvFilename):
 
 def compute_team(team):
     print('Team:', team["teamname"])
-    strings = ["invocateur1", "invocateur2","invocateur3","invocateur4","invocateur5"]
+    strings = ["summoner1", "summoner2","summoner3","summoner4","summoner5"]
     flexEloSum = 0
     flexEloN = 5
     rankedEloSum = 0
